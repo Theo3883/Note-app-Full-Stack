@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import api from "../api";
-import Note from "../components/Note"
-import "../styles/Home.css"
+import Note from "../components/Note";
+import "../styles/Home.css";
+import { useNavigate } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 function Home() {
   const [notes, setNotes] = useState([]);
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     getNotes();
@@ -24,6 +26,10 @@ function Home() {
       .catch((err) => alert(err));
   };
 
+  const logOut = (e) => {
+    e.preventDefault();
+    navigate("/login");
+  };
   const createNote = (e) => {
     e.preventDefault();
     api
@@ -32,19 +38,19 @@ function Home() {
         if (res.status === 201) alert("Note created!");
         else alert("Failed to make note.");
         getNotes();
-    })
-    .catch((err) => alert(err));
+      })
+      .catch((err) => alert(err));
   };
-   const deleteNote = (id) => {
-        api
-            .delete(`${apiUrl}/api/notes/delete/${id}/`)
-            .then((res) => {
-                if (res.status === 204) alert("Note deleted!");
-                else alert("Failed to delete note.");
-                getNotes();
-            })
-            .catch((error) => alert(error));
-    };
+  const deleteNote = (id) => {
+    api
+      .delete(`${apiUrl}/api/notes/delete/${id}/`)
+      .then((res) => {
+        if (res.status === 204) alert("Note deleted!");
+        else alert("Failed to delete note.");
+        getNotes();
+      })
+      .catch((error) => alert(error));
+  };
 
   return (
     <div>
@@ -53,6 +59,12 @@ function Home() {
         {notes.map((note) => (
           <Note note={note} onDelete={deleteNote} key={note.id}></Note>
         ))}
+      </div>
+      <div className="logout-container">
+     
+        <form onSubmit={logOut}>
+          <input type="submit" value="LogOut"></input>
+        </form>
       </div>
       <h2>Create a Note</h2>
       <form onSubmit={createNote}>

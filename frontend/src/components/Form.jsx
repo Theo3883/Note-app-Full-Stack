@@ -28,7 +28,10 @@ function Form({ route, method }) {
         navigate("/login");
       }
     } catch (error) {
-      alert(error);
+      if(error.status === 401)
+        alert("Incorrect username or password");
+      else
+        alert("Database or code error");
     } finally {
       setLoading(false);
     }
